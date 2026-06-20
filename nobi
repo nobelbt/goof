@@ -1,0 +1,870 @@
+/* ---------- Petal mark (logo-derived geometry) ---------- */
+function PetalMark({ size = 64, scattered = false, className = "" }) {
+  // 8 petals at 45deg increments, alternating two gray tones, plus dark center star
+  const petals = Array.from({ length: 8 });
+  return (
+    <svg
+      viewBox="0 0 200 200"
+      width={size}
+      height={size}
+      className={className}
+      style={{ overflow: "visible" }}
+    >
+      <g style={{ transformOrigin: "100px 100px" }}>
+        {petals.map((_, i) => {
+          const angle = i * 45;
+          const dark = i % 2 === 0;
+          const offset = scattered ? (i % 2 === 0 ? 14 : -10) : 0;
+          const rot = scattered ? angle + (i % 2 === 0 ? 6 : -6) : angle;
+          return (
+            <path
+              key={i}
+              d="M100 100 C 80 60, 85 20, 100 5 C 115 20, 120 60, 100 100 Z"
+              fill={dark ? "#5A5A5A" : "#8C8C8C"}
+              transform={`rotate(${rot} 100 100) translate(0 ${offset})`}
+              opacity={scattered ? 0.85 : 1}
+            />
+          );
+        })}
+        <path
+          d="M100 70 L110 85 L128 80 L118 96 L132 108 L113 110 L116 129 L100 117 L84 129 L87 110 L68 108 L82 96 L72 80 L90 85 Z"
+          fill="#1A1A1A"
+        />
+      </g>
+    </svg>
+  );
+}
+
+/* ---------- Hero: petals animate from scattered to formed ---------- */
+function Hero() {
+  const [formed, setFormed] = useState(false);
+  useEffect(() => {
+    const t = setTimeout(() => setFormed(true), 250);
+    return () => clearTimeout(t);
+  }, []);
+
+  return (
+    <section style={styles.hero}>
+      <div style={styles.heroInner}>
+        <div style={styles.heroMarkWrap}>
+          <div
+            style={{
+              transition: "transform 1.1s cubic-bezier(.16,1,.3,1)",
+              transform: formed ? "rotate(0deg) scale(1)" : "rotate(-18deg) scale(0.92)",
+            }}
+          >
+            <PetalMark size={120} scattered={!formed} />
+          </div>
+        </div>
+        <p style={styles.heroEyebrow}>WEB STUDIO FOR LOCAL BUSINESS</p>
+        <h1 style={styles.heroTitle}>
+          Every business starts <span style={styles.heroTitleMuted}>scattered.</span>
+          <br />
+          We build the system that <span style={styles.heroTitleSolid}>holds.</span>
+        </h1>
+        <p style={styles.heroSub}>
+          Entrophy designs and builds websites for local businesses — taking
+          the disorder of "what should our site even say" and turning it into
+          a site that loads fast, ranks well, and gets the call booked.
+        </p>
+        <div style={styles.heroActions}>
+          <a href="#contact" style={styles.btnPrimary}>
+            Start a project
+          </a>
+          <a href="#work" style={styles.btnGhost}>
+            See the work
+          </a>
+        </div>
+      </div>
+      <div style={styles.heroFade} />
+    </section>
+  );
+}
+
+/* ---------- Services ---------- */
+const SERVICES = [
+  {
+    title: "Sites that load in a blink",
+    body:
+      "A new build, framed around what your customers actually search for, on the stack your business will outgrow slowly, not quickly.",
+  },
+  {
+    title: "Local search, sorted",
+    body:
+      "Your Google Business profile, your site's structure, and your reviews working as one system — so 'plumber near me' finds you, not the next listing.",
+  },
+  {
+    title: "Booking and contact, simplified",
+    body:
+      "Forms, booking widgets, and click-to-call set up so a visitor becomes an appointment without five extra steps in between.",
+  },
+  {
+    title: "Upkeep, on a schedule",
+    body:
+      "Monthly check-ins on speed, broken links, and content updates, so the site stays a system instead of decaying back into a liability.",
+  },
+];
+
+function Services() {
+  return (
+    <section id="services" style={styles.section}>
+      <SectionHeading
+        eyebrow="WHAT WE DO"
+        title="Four problems, one studio"
+        sub="Most local businesses don't need an app. They need these four things done properly, in order."
+      />
+      <div style={styles.serviceGrid}>
+        {SERVICES.map((s) => (
+          <div key={s.title} style={styles.serviceCard}>
+            <h3 style={styles.serviceTitle}>{s.title}</h3>
+            <p style={styles.serviceBody}>{s.body}</p>
+          </div>
+        ))}
+      </div>
+    </section>
+  );
+}
+
+/* ---------- Portfolio ----------
+   No client work exists yet — this section is honest about that
+   rather than inventing case studies. Replace PROJECTS with real
+   entries (name, type, a result you can stand behind) as work ships.
+*/
+const PROJECTS = [
+  // { name: "Client name", type: "Service business", result: "What actually happened" },
+];
+
+function Portfolio() {
+  return (
+    <section id="work" style={{ ...styles.section, background: "#1A1A1A" }}>
+      <SectionHeading
+        dark
+        eyebrow="RECENT WORK"
+        title="We're just getting started"
+        sub="Entrophy is a new studio — no client roster yet, no invented case studies. This is where real projects will go as we ship them."
+      />
+      {PROJECTS.length === 0 ? (
+        <div style={styles.workEmpty}>
+          <PetalMark size={44} />
+          <p style={styles.workEmptyText}>
+            Want to be the first project featured here? Tell us about your
+            business below.
+          </p>
+          <a href="#contact" style={styles.btnGhostDark}>
+            Get in touch
+          </a>
+        </div>
+      ) : (
+        <div style={styles.workGrid}>
+          {PROJECTS.map((w) => (
+            <div key={w.name} style={styles.workCard}>
+              <div style={styles.workSwatch} />
+              <h3 style={styles.workName}>{w.name}</h3>
+              <p style={styles.workType}>{w.type}</p>
+              <p style={styles.workResult}>{w.result}</p>
+            </div>
+          ))}
+        </div>
+      )}
+    </section>
+  );
+}
+
+/* ---------- Team ----------
+   Real founders and roles. All three also build/develop sites
+   alongside their specialty below.
+*/
+const TEAM = [
+  { name: "Nobel Bisrat", role: "Marketing & Development" },
+  { name: "Nebai Solomon", role: "Web Design & Development" },
+  { name: "Yeab Dawit", role: "Sales & Development" },
+];
+
+function Team() {
+  return (
+    <section id="team" style={styles.section}>
+      <SectionHeading
+        eyebrow="WHO'S BUILDING IT"
+        title="Small studio, on purpose"
+        sub="Three people who'd rather take on twelve clients properly than a hundred carelessly."
+      />
+      <div style={styles.teamGrid}>
+        {TEAM.map((t) => (
+          <div key={t.role} style={styles.teamCard}>
+            <PetalMark size={48} />
+            <h3 style={styles.teamName}>{t.name}</h3>
+            <p style={styles.teamRole}>{t.role}</p>
+          </div>
+        ))}
+      </div>
+    </section>
+  );
+}
+
+/* ---------- Pricing ----------
+   Prices below are placeholders — set these based on your actual
+   costs and local market, not invented numbers.
+*/
+const PLANS = [
+  {
+    name: "Foundation",
+    price: "$[X]",
+    note: "one-time",
+    desc: "A focused, fast site for a business that just needs to exist online, properly.",
+    features: ["Up to 5 pages", "Mobile-first build", "Basic local SEO setup", "Set your own turnaround"],
+  },
+  {
+    name: "System",
+    price: "$[X]",
+    note: "one-time",
+    desc: "The full setup: site, booking, and search working together from day one.",
+    features: ["Up to 10 pages", "Booking / contact integration", "Full local SEO + Business Profile", "Post-launch support window"],
+    featured: true,
+  },
+  {
+    name: "Ongoing",
+    price: "$[X]",
+    note: "/month",
+    desc: "Keep it maintained, updated, and improving after launch.",
+    features: ["Regular health check", "Content updates", "Uptime & speed monitoring", "Priority support"],
+  },
+];
+
+function Pricing() {
+  return (
+    <section id="pricing" style={styles.section}>
+      <SectionHeading
+        eyebrow="INVESTMENT"
+        title="Pricing that fits a local budget"
+        sub="No retainvalue padding. Pick what your business needs right now."
+      />
+      <div style={styles.pricingGrid}>
+        {PLANS.map((p) => (
+          <div
+            key={p.name}
+            style={{
+              ...styles.priceCard,
+              ...(p.featured ? styles.priceCardFeatured : {}),
+            }}
+          >
+            {p.featured && <div style={styles.priceBadge}>RECOMMENDED</div>}
+            <h3 style={styles.priceName}>{p.name}</h3>
+            <div style={styles.priceRow}>
+              <span style={styles.priceAmount}>{p.price}</span>
+              <span style={styles.priceNote}>{p.note}</span>
+            </div>
+            <p style={styles.priceDesc}>{p.desc}</p>
+            <ul style={styles.priceFeatures}>
+              {p.features.map((f) => (
+                <li key={f} style={styles.priceFeature}>
+                  {f}
+                </li>
+              ))}
+            </ul>
+            <a href="#contact" style={p.featured ? styles.btnPrimaryFull : styles.btnGhostFull}>
+              Get started
+            </a>
+          </div>
+        ))}
+      </div>
+    </section>
+  );
+}
+
+/* ---------- Contact ---------- */
+function Contact() {
+  const [submitted, setSubmitted] = useState(false);
+  const [values, setValues] = useState({ name: "", business: "", email: "", message: "" });
+
+  function handleChange(e) {
+    setValues((v) => ({ ...v, [e.target.name]: e.target.value }));
+  }
+
+  function handleSubmit(e) {
+    e.preventDefault();
+    setSubmitted(true);
+  }
+
+  return (
+    <section id="contact" style={{ ...styles.section, background: "#1A1A1A" }}>
+      <SectionHeading
+        dark
+        eyebrow="GET IN TOUCH"
+        title="Tell us about your business"
+        sub="A few details, and we'll come back with a plan, not a sales call."
+      />
+      <div style={styles.contactWrap}>
+        {submitted ? (
+          <div style={styles.contactDone}>
+            <PetalMark size={56} />
+            <h3 style={styles.contactDoneTitle}>Message sent.</h3>
+            <p style={styles.contactDoneBody}>
+              We reply within one business day. Talk soon.
+            </p>
+          </div>
+        ) : (
+          <div onSubmit={handleSubmit} style={styles.form}>
+            <div style={styles.formRow}>
+              <label style={styles.label}>
+                Your name
+                <input
+                  style={styles.input}
+                  name="name"
+                  value={values.name}
+                  onChange={handleChange}
+                  placeholder="Jordan Lee"
+                />
+              </label>
+              <label style={styles.label}>
+                Business name
+                <input
+                  style={styles.input}
+                  name="business"
+                  value={values.business}
+                  onChange={handleChange}
+                  placeholder="Lee's Hardware"
+                />
+              </label>
+            </div>
+            <label style={styles.label}>
+              Email
+              <input
+                style={styles.input}
+                name="email"
+                type="email"
+                value={values.email}
+                onChange={handleChange}
+                placeholder="jordan@leeshardware.com"
+              />
+            </label>
+            <label style={styles.label}>
+              What does your business need?
+              <textarea
+                style={{ ...styles.input, height: 110, resize: "vertical" }}
+                name="message"
+                value={values.message}
+                onChange={handleChange}
+                placeholder="We don't have a website yet, or ours hasn't been touched since 2014..."
+              />
+            </label>
+            <button onClick={handleSubmit} style={styles.btnPrimaryFull}>
+              Send message
+            </button>
+          </div>
+        )}
+      </div>
+    </section>
+  );
+}
+
+/* ---------- Shared heading ---------- */
+function SectionHeading({ eyebrow, title, sub, dark = false }) {
+  return (
+    <div style={styles.sectionHeading}>
+      <p style={{ ...styles.eyebrow, color: dark ? "#8C8C8C" : "#8C8C8C" }}>{eyebrow}</p>
+      <h2 style={{ ...styles.sectionTitle, color: dark ? "#FAFAFA" : "#1A1A1A" }}>{title}</h2>
+      {sub && (
+        <p style={{ ...styles.sectionSub, color: dark ? "#D4D4D4" : "#5A5A5A" }}>{sub}</p>
+      )}
+    </div>
+  );
+}
+
+/* ---------- Nav ---------- */
+function Nav() {
+  const [scrolled, setScrolled] = useState(false);
+  useEffect(() => {
+    function onScroll() {
+      setScrolled(window.scrollY > 24);
+    }
+    window.addEventListener("scroll", onScroll);
+    return () => window.removeEventListener("scroll", onScroll);
+  }, []);
+
+  return (
+    <nav
+      style={{
+        ...styles.nav,
+        background: scrolled ? "rgba(250,250,250,0.92)" : "transparent",
+        boxShadow: scrolled ? "0 1px 0 #D4D4D4" : "none",
+      }}
+    >
+      <div style={styles.navInner}>
+        <a href="#" style={styles.navBrand}>
+          <PetalMark size={26} />
+          <span style={styles.navBrandText}>ENTROPHY</span>
+        </a>
+        <div style={styles.navLinks}>
+          <a href="#services" style={styles.navLink}>Services</a>
+          <a href="#work" style={styles.navLink}>Work</a>
+          <a href="#team" style={styles.navLink}>Team</a>
+          <a href="#pricing" style={styles.navLink}>Pricing</a>
+          <a href="#contact" style={styles.navCta}>Contact</a>
+        </div>
+      </div>
+    </nav>
+  );
+}
+
+/* ---------- Footer ---------- */
+function Footer() {
+  return (
+    <footer style={styles.footer}>
+      <PetalMark size={32} />
+      <p style={styles.footerText}>ENTROPHY — web studio for local business</p>
+      <p style={styles.footerSub}>© 2026 Entrophy. Built, not templated.</p>
+    </footer>
+  );
+}
+
+/* ---------- Root ---------- */
+export default function EntrophySite() {
+  useFonts();
+  return (
+    <div style={styles.root}>
+      <style>{`
+        * { box-sizing: border-box; }
+        a { text-decoration: none; }
+        ul { margin: 0; padding: 0; list-style: none; }
+        input::placeholder, textarea::placeholder { color: #8C8C8C; }
+        input:focus, textarea:focus, a:focus-visible, button:focus-visible {
+          outline: 2px solid #5A5A5A;
+          outline-offset: 2px;
+        }
+        @media (max-width: 760px) {
+          .entrophy-nav-links { display: none !important; }
+        }
+        @media (prefers-reduced-motion: reduce) {
+          * { transition: none !important; animation: none !important; }
+        }
+      `}</style>
+      <Nav />
+      <Hero />
+      <Services />
+      <Portfolio />
+      <Team />
+      <Pricing />
+      <Contact />
+      <Footer />
+    </div>
+  );
+}
+
+/* ---------- Styles ---------- */
+const FONT_DISPLAY = "'Space Grotesk', sans-serif";
+const FONT_BODY = "'Inter', sans-serif";
+
+const styles = {
+  root: {
+    fontFamily: FONT_BODY,
+    background: "#FAFAFA",
+    color: "#1A1A1A",
+    width: "100%",
+  },
+  nav: {
+    position: "sticky",
+    top: 0,
+    zIndex: 50,
+    transition: "background 0.3s ease, box-shadow 0.3s ease",
+    backdropFilter: "blur(6px)",
+  },
+  navInner: {
+    maxWidth: 1140,
+    margin: "0 auto",
+    padding: "16px 28px",
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "space-between",
+  },
+  navBrand: {
+    display: "flex",
+    alignItems: "center",
+    gap: 10,
+  },
+  navBrandText: {
+    fontFamily: FONT_DISPLAY,
+    fontWeight: 600,
+    fontSize: 16,
+    letterSpacing: "0.12em",
+    color: "#1A1A1A",
+  },
+  navLinks: {
+    display: "flex",
+    alignItems: "center",
+    gap: 28,
+  },
+  navLink: {
+    fontSize: 14,
+    color: "#5A5A5A",
+    fontWeight: 500,
+  },
+  navCta: {
+    fontSize: 14,
+    fontWeight: 600,
+    color: "#FAFAFA",
+    background: "#1A1A1A",
+    padding: "9px 18px",
+    borderRadius: 4,
+  },
+  hero: {
+    position: "relative",
+    padding: "120px 28px 100px",
+    textAlign: "center",
+    overflow: "hidden",
+    borderBottom: "1px solid #D4D4D4",
+  },
+  heroInner: {
+    maxWidth: 760,
+    margin: "0 auto",
+    position: "relative",
+    zIndex: 2,
+  },
+  heroMarkWrap: {
+    display: "flex",
+    justifyContent: "center",
+    marginBottom: 28,
+  },
+  heroEyebrow: {
+    fontFamily: FONT_BODY,
+    fontSize: 12,
+    letterSpacing: "0.22em",
+    fontWeight: 600,
+    color: "#8C8C8C",
+    marginBottom: 18,
+  },
+  heroTitle: {
+    fontFamily: FONT_DISPLAY,
+    fontSize: "clamp(32px, 5.5vw, 56px)",
+    lineHeight: 1.12,
+    fontWeight: 600,
+    margin: "0 0 22px",
+    color: "#1A1A1A",
+  },
+  heroTitleMuted: { color: "#8C8C8C" },
+  heroTitleSolid: { color: "#1A1A1A", borderBottom: "4px solid #1A1A1A" },
+  heroSub: {
+    fontSize: 17,
+    lineHeight: 1.6,
+    color: "#5A5A5A",
+    maxWidth: 540,
+    margin: "0 auto 36px",
+  },
+  heroActions: {
+    display: "flex",
+    gap: 14,
+    justifyContent: "center",
+    flexWrap: "wrap",
+  },
+  heroFade: {
+    position: "absolute",
+    inset: 0,
+    background:
+      "radial-gradient(ellipse at 50% 0%, rgba(212,212,212,0.35), transparent 60%)",
+    zIndex: 1,
+  },
+  btnPrimary: {
+    background: "#1A1A1A",
+    color: "#FAFAFA",
+    padding: "13px 26px",
+    borderRadius: 4,
+    fontWeight: 600,
+    fontSize: 15,
+  },
+  btnGhost: {
+    background: "transparent",
+    color: "#1A1A1A",
+    padding: "13px 26px",
+    borderRadius: 4,
+    fontWeight: 600,
+    fontSize: 15,
+    border: "1px solid #1A1A1A",
+  },
+  btnPrimaryFull: {
+    display: "block",
+    textAlign: "center",
+    background: "#1A1A1A",
+    color: "#FAFAFA",
+    padding: "13px 0",
+    borderRadius: 4,
+    fontWeight: 600,
+    fontSize: 15,
+    width: "100%",
+    border: "none",
+    cursor: "pointer",
+    fontFamily: FONT_BODY,
+  },
+  btnGhostFull: {
+    display: "block",
+    textAlign: "center",
+    background: "transparent",
+    color: "#1A1A1A",
+    padding: "13px 0",
+    borderRadius: 4,
+    fontWeight: 600,
+    fontSize: 15,
+    width: "100%",
+    border: "1px solid #1A1A1A",
+  },
+  section: {
+    padding: "90px 28px",
+    maxWidth: 1140,
+    margin: "0 auto",
+  },
+  sectionHeading: {
+    textAlign: "center",
+    maxWidth: 620,
+    margin: "0 auto 56px",
+  },
+  eyebrow: {
+    fontSize: 12,
+    letterSpacing: "0.22em",
+    fontWeight: 600,
+    marginBottom: 12,
+  },
+  sectionTitle: {
+    fontFamily: FONT_DISPLAY,
+    fontSize: "clamp(26px, 3.6vw, 38px)",
+    fontWeight: 600,
+    margin: "0 0 14px",
+  },
+  sectionSub: {
+    fontSize: 16,
+    lineHeight: 1.6,
+  },
+  serviceGrid: {
+    display: "grid",
+    gridTemplateColumns: "repeat(2, 1fr)",
+    gap: 28,
+  },
+  serviceCard: {
+    border: "1px solid #D4D4D4",
+    borderRadius: 8,
+    padding: 32,
+    background: "#FFFFFF",
+  },
+  serviceTitle: {
+    fontFamily: FONT_DISPLAY,
+    fontSize: 20,
+    fontWeight: 600,
+    margin: "0 0 10px",
+    color: "#1A1A1A",
+  },
+  serviceBody: {
+    fontSize: 15,
+    lineHeight: 1.65,
+    color: "#5A5A5A",
+    margin: 0,
+  },
+  workGrid: {
+    display: "grid",
+    gridTemplateColumns: "repeat(3, 1fr)",
+    gap: 24,
+  },
+  workEmpty: {
+    textAlign: "center",
+    padding: "48px 28px",
+    border: "1px dashed #5A5A5A",
+    borderRadius: 8,
+    maxWidth: 480,
+    margin: "0 auto",
+  },
+  workEmptyText: {
+    fontSize: 15,
+    color: "#D4D4D4",
+    lineHeight: 1.6,
+    margin: "18px 0 24px",
+  },
+  btnGhostDark: {
+    display: "inline-block",
+    background: "transparent",
+    color: "#FAFAFA",
+    padding: "12px 24px",
+    borderRadius: 4,
+    fontWeight: 600,
+    fontSize: 14,
+    border: "1px solid #8C8C8C",
+  },
+  workCard: {
+    background: "#242424",
+    border: "1px solid #3a3a3a",
+    borderRadius: 8,
+    padding: 26,
+  },
+  workSwatch: {
+    height: 100,
+    borderRadius: 6,
+    marginBottom: 18,
+    background:
+      "linear-gradient(135deg, #5A5A5A 0%, #8C8C8C 45%, #D4D4D4 100%)",
+  },
+  workName: {
+    fontFamily: FONT_DISPLAY,
+    fontSize: 18,
+    fontWeight: 600,
+    color: "#FAFAFA",
+    margin: "0 0 4px",
+  },
+  workType: {
+    fontSize: 13,
+    color: "#8C8C8C",
+    margin: "0 0 14px",
+  },
+  workResult: {
+    fontSize: 14,
+    color: "#D4D4D4",
+    fontWeight: 500,
+    margin: 0,
+  },
+  teamGrid: {
+    display: "grid",
+    gridTemplateColumns: "repeat(3, 1fr)",
+    gap: 24,
+  },
+  teamCard: {
+    textAlign: "center",
+    padding: 32,
+    border: "1px solid #D4D4D4",
+    borderRadius: 8,
+  },
+  teamName: {
+    fontFamily: FONT_DISPLAY,
+    fontSize: 18,
+    fontWeight: 600,
+    margin: "18px 0 4px",
+  },
+  teamRole: {
+    fontSize: 14,
+    color: "#5A5A5A",
+    margin: 0,
+  },
+  pricingGrid: {
+    display: "grid",
+    gridTemplateColumns: "repeat(3, 1fr)",
+    gap: 24,
+    alignItems: "stretch",
+  },
+  priceCard: {
+    border: "1px solid #D4D4D4",
+    borderRadius: 8,
+    padding: 30,
+    background: "#FFFFFF",
+    display: "flex",
+    flexDirection: "column",
+    position: "relative",
+  },
+  priceCardFeatured: {
+    border: "1px solid #1A1A1A",
+    boxShadow: "0 8px 24px rgba(0,0,0,0.08)",
+  },
+  priceBadge: {
+    position: "absolute",
+    top: -12,
+    left: 24,
+    background: "#1A1A1A",
+    color: "#FAFAFA",
+    fontSize: 11,
+    fontWeight: 700,
+    letterSpacing: "0.08em",
+    padding: "4px 10px",
+    borderRadius: 4,
+  },
+  priceName: {
+    fontFamily: FONT_DISPLAY,
+    fontSize: 19,
+    fontWeight: 600,
+    margin: "8px 0 14px",
+  },
+  priceRow: {
+    display: "flex",
+    alignItems: "baseline",
+    gap: 6,
+    marginBottom: 14,
+  },
+  priceAmount: {
+    fontFamily: FONT_DISPLAY,
+    fontSize: 34,
+    fontWeight: 700,
+  },
+  priceNote: {
+    fontSize: 14,
+    color: "#8C8C8C",
+  },
+  priceDesc: {
+    fontSize: 14,
+    color: "#5A5A5A",
+    lineHeight: 1.55,
+    marginBottom: 20,
+  },
+  priceFeatures: {
+    marginBottom: 28,
+    flexGrow: 1,
+  },
+  priceFeature: {
+    fontSize: 14,
+    color: "#1A1A1A",
+    padding: "8px 0",
+    borderTop: "1px solid #EDEDED",
+  },
+  contactWrap: {
+    maxWidth: 560,
+    margin: "0 auto",
+  },
+  form: {
+    display: "flex",
+    flexDirection: "column",
+    gap: 18,
+  },
+  formRow: {
+    display: "grid",
+    gridTemplateColumns: "1fr 1fr",
+    gap: 18,
+  },
+  label: {
+    fontSize: 13,
+    color: "#D4D4D4",
+    fontWeight: 500,
+    display: "flex",
+    flexDirection: "column",
+    gap: 8,
+  },
+  input: {
+    fontFamily: FONT_BODY,
+    fontSize: 15,
+    padding: "12px 14px",
+    borderRadius: 4,
+    border: "1px solid #5A5A5A",
+    background: "#242424",
+    color: "#FAFAFA",
+  },
+  contactDone: {
+    textAlign: "center",
+    padding: "40px 0",
+  },
+  contactDoneTitle: {
+    fontFamily: FONT_DISPLAY,
+    fontSize: 22,
+    color: "#FAFAFA",
+    margin: "18px 0 8px",
+  },
+  contactDoneBody: {
+    color: "#D4D4D4",
+    fontSize: 15,
+  },
+  footer: {
+    textAlign: "center",
+    padding: "48px 28px",
+    borderTop: "1px solid #D4D4D4",
+  },
+  footerText: {
+    fontFamily: FONT_DISPLAY,
+    fontSize: 13,
+    letterSpacing: "0.1em",
+    color: "#5A5A5A",
+    margin: "12px 0 4px",
+  },
+  footerSub: {
+    fontSize: 12,
+    color: "#8C8C8C",
+    margin: 0,
+  },
+};
